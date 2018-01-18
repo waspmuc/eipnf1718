@@ -12,6 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         Spiel game = new Spiel(); //Deklarierung und Erzeugung eines Objekts vom Typ Spiel.
+        //Spiel second_game = new Spiel(); //Deklarierung und Erzeugung eines zweiten Objekts vom Typ Spiel.
 
     }
 }

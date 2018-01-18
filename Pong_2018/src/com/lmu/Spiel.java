@@ -10,7 +10,7 @@ public class Spiel {
     Spielfenster gamewindow; //Deklarierung eines Objekts vom Typ Spielfenster
 
     public Spiel() { //Konstruktor
-        gamewindow = new Spielfenster(); //erstellung eines neuen Spielfenster-Obekts
+        gamewindow = new Spielfenster(); //Erstellung eines neuen Spielfenster-Obekts
     }
 
 }
