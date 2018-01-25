@@ -13,6 +13,7 @@ public class Spielfenster extends JFrame { //Spielfenster leitet von JFrame ab u
     Spielfeld spielfeld;
     JLabel score;
 
+
     public Spielfenster() { //In dem Konstruktor werden alle Konfigurationen vorgenommen. Er wird bei der Erstellung des Objekts EINMAL aufgerufen.
 
         spielfeld = new Spielfeld(); //Ein neues Objekt vom Typ Spielfeld wird erstellt
@@ -34,5 +35,7 @@ public class Spielfenster extends JFrame { //Spielfenster leitet von JFrame ab u
 
         this.setVisible(true); //Mache das Fenster sichtbar
         this.setDefaultCloseOperation(EXIT_ON_CLOSE); //Beende den Prozess/das Programm, wenn das Fenster geschlossen wird
+
+        spielfeld.run(); //Rufe die Run-Methode zur Animation auf, nachdem das Fenster sichtbar ist
     }
 }
