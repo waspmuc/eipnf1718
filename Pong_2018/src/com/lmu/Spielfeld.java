@@ -12,12 +12,15 @@ import java.awt.event.KeyListener;
 
 public class Spielfeld extends JPanel implements KeyListener, Runnable { //Spielfeld ist ein JPanel und implementiert das Interface Keylistener
 
-    private int rechteckLinksPos_X = 0;
-    private int rechteckLinksPos_Y = 250;
     private int rechteckRechtsPos_X = 580;
     private int rechteckRechtsPos_Y = 250;
-    private int ballXPosition = 285;
-    private int ballYPosition = 285;
+    private int rechteckLinksPos_X = 0;
+    private int rechteckLinksPos_Y = 250;
+    private int ballXPosition = 400;
+    private int ballYPosition = 200;
+
+    private boolean ballbewegungGestartet = true;
+
 
     public void Spielfeld() { //Konstruktor; Bisher ohne weitere Funktion
 
@@ -32,8 +35,8 @@ public class Spielfeld extends JPanel implements KeyListener, Runnable { //Spiel
         //neuerMaler.drawLine(30, 30, 400, 400);
         //neuerMaler.setColor(Color.GREEN);
         //neuerMaler.drawRect(30, 30, 400, 200);
-        neuerMaler.fillRect(rechteckLinksPos_X, rechteckLinksPos_Y, 20, 100);
         neuerMaler.fillRect(rechteckRechtsPos_X, rechteckRechtsPos_Y, 20, 100);
+        neuerMaler.fillRect(rechteckLinksPos_X, rechteckLinksPos_Y, 20, 100);
 
         neuerMaler.setColor(Color.GREEN);
         neuerMaler.fillOval(ballXPosition, ballYPosition, 30, 30);
@@ -43,7 +46,6 @@ public class Spielfeld extends JPanel implements KeyListener, Runnable { //Spiel
     @Override
     public void keyTyped(KeyEvent ereignis) {
         System.out.println("KeyTyped wurde aufgerufen");
-        //System.out.println(event.getKeyChar());
 
         if (ereignis.getKeyChar() == 't') {
             System.out.println("t wurde gedrückt");
@@ -58,29 +60,35 @@ public class Spielfeld extends JPanel implements KeyListener, Runnable { //Spiel
 
         System.out.println("Keycode is: " + ereignis.getKeyCode());
 
-        if (ereignis.getKeyCode() == KeyEvent.VK_UP && rechteckLinksPos_Y > 0) {
+        if (ereignis.getKeyCode() == KeyEvent.VK_UP && rechteckRechtsPos_Y > 0) {
             System.out.println("Pfeiltaste nach oben wurde gedrückt");
-            rechteckLinksPos_Y = rechteckLinksPos_Y - 50;
-            //repaint(); //alternativ einmalig am Ende der Methode
-        }
-
-        if (ereignis.getKeyCode() == KeyEvent.VK_DOWN && rechteckLinksPos_Y < (480)) {
-            System.out.println("Y-Position: " + rechteckLinksPos_Y);
-            System.out.println("Pfeiltaste nach unten wurde gedrückt");
-            rechteckLinksPos_Y = rechteckLinksPos_Y + 50;
-            //repaint(); //alternativ einmalig am Ende der Methode
-        }
-
-        if (ereignis.getKeyChar() == 'w' && rechteckRechtsPos_Y > 0) {
-            System.out.println("w wurde gedrückt");
             rechteckRechtsPos_Y = rechteckRechtsPos_Y - 50;
             //repaint(); //alternativ einmalig am Ende der Methode
         }
 
-        if (ereignis.getKeyChar() == 's' && rechteckRechtsPos_Y < 480) {
-            System.out.println("s wurde gedrückt");
+        if (ereignis.getKeyCode() == KeyEvent.VK_DOWN && rechteckRechtsPos_Y < (480)) {
+            System.out.println("Y-Position: " + rechteckRechtsPos_Y);
+            System.out.println("Pfeiltaste nach unten wurde gedrückt");
             rechteckRechtsPos_Y = rechteckRechtsPos_Y + 50;
             //repaint(); //alternativ einmalig am Ende der Methode
+        }
+
+        if (ereignis.getKeyChar() == 'w' && rechteckLinksPos_Y > 0) {
+            System.out.println("w wurde gedrückt");
+            rechteckLinksPos_Y = rechteckLinksPos_Y - 50;
+            //repaint(); //alternativ einmalig am Ende der Methode
+        }
+
+        if (ereignis.getKeyChar() == 's' && rechteckLinksPos_Y < 480) {
+            System.out.println("s wurde gedrückt");
+            rechteckLinksPos_Y = rechteckLinksPos_Y + 50;
+            //repaint(); //alternativ einmalig am Ende der Methode
+        }
+
+        if (ereignis.getKeyCode() == KeyEvent.VK_SPACE) { // Space-Taste wurde gedrückt
+            System.out.println("Space wurde aufgerufen");
+            ballbewegungGestartet = true;
+            System.out.println(ballbewegungGestartet);
         }
 
         repaint();
@@ -94,26 +102,48 @@ public class Spielfeld extends JPanel implements KeyListener, Runnable { //Spiel
     }
 
     @Override
-    @SuppressWarnings()
     public void run() {
 
-        int offset = 1;
+        boolean gameLoopIstAktiv = true;
+        int offset_x = 1;
+        int offset_y = 1;
 
-        while (true) {
+        while (gameLoopIstAktiv) {
+
             try {
+                if (ballbewegungGestartet) {
 
-                System.out.println("Run wurde aufgerufen");
+                    if (ballXPosition == 0) {  // linke Seite erreicht
+                        offset_x = offset_x * -1;
+                        ballXPosition = 250;
+                        ballYPosition = 250;
+                        ballbewegungGestartet = false;
 
+                        Spielfenster referenzZumSpielefenster = (Spielfenster) SwingUtilities.getRoot(this); // Hole Referenz zum Spielefenster, um auf diese Komponenten zuzugreifen
+                        referenzZumSpielefenster.spielstandAnzeige.setText("Spielstand 0 : 1"); // Ändere JLabel spielstandAnzeige
 
-                if ((ballXPosition + 30) >= 600)
-                    offset = offset * -1;
+                        System.out.println("Linke Seite erreicht. Ball zurücksetzen.");
+                    }
 
-                ballXPosition = ballXPosition + offset;
-                ballYPosition = ballYPosition + offset;
+                    if (ballXPosition == 580) { //rechte Seite erreicht
+                        offset_x = offset_x * -1;
+                        ballXPosition = 250;
+                        ballYPosition = 250;
+                        ballbewegungGestartet = false;
+                        System.out.println("Rechte Seite erreicht. Ball zurücksetzen.");
+                    }
 
+                    if (ballYPosition == 0) //oberes Seite erreicht
+                        offset_y = offset_y * -1;
 
-                repaint();
+                    if (ballYPosition == 580) // untere Seite erreicht
+                        offset_y = offset_y * -1;
 
+                    ballXPosition = ballXPosition + offset_x;
+                    ballYPosition = ballYPosition + offset_y;
+
+                    repaint();
+                }
                 Thread.currentThread().sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
